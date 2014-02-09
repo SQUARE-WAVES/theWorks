@@ -1,0 +1,21 @@
+{
+  "name": "the-works",
+  "version": "0.0.0",
+  "description": "a dependency injection system using inheritable POJSO config",
+  "contributors": [
+    "Mike Behrman"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec --ui tdd test/*.js"
+  },
+  "author": "michael.behrman@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "async": "~0.2.10"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.0"
+  }
+}
