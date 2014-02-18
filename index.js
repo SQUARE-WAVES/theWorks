@@ -1,5 +1,14 @@
-module.exports = {
-	'build': require('./lib/factory'),
-	'overlay' : require('./lib/configmasticator').overlay,
-	'trimout' : require('./lib/configmasticator').trimout
+var createFactory = require('./lib/factory');
+
+module.exports.factory = {
+	'build': createFactory(),
+	'createBuilder': createFactory,
+	'defaultPluginRetrievers': require('./lib/pluginRetrievers')
+}
+
+var configmasticator = require('./lib/configmasticator');
+
+module.exports.config = {
+	'overlay' : configmasticator.overlay,
+	'trimout' : configmasticator.trimout
 };

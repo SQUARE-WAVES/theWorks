@@ -1,4 +1,4 @@
-var configmasticator = require('../index.js');
+var configmasticator = require('../index.js').config;
 var assert = require('assert');
 var _ = require('lodash');
 
@@ -29,16 +29,19 @@ suite('Config Masticator Tests',function(){
 
 	test('overlayMerge', function (done)  {
 
-		var cf1clone = _.clone(cf1);
-
 		var configs = [cf1, cf2, cf3];
+		var clones = configs.map(_.clone);
 	  var merged = configmasticator.overlay(configs);
 
 	  assert.equal(merged.a,cf3.a,'the final overlay should shine through for a');
 	  assert.equal(merged.c,null,'the final overlay should have nulled out c');
 	  assert.equal(merged.d,cf2.d,'the second overlay should have added the d thing');
-	  assert.deepEqual(cf1clone,cf1,'the original configs should not be mutated')
-
+	  
+	  clones.forEach(function(clone,i){
+	  	var original = configs[i];
+	  	assert.deepEqual(clone,original,'the original configs should not be mutated')
+	  });
+	  
 	  done();
 	});
 

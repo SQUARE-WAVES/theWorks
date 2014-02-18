@@ -1,30 +1,13 @@
 var assert = require('assert');
-var factory = require('../index.js');
-
-var badConfig = {
-  'hello':{
-    'module':'./test/hello.js',
-    'options':{
-      'name':'nobody will know',
-      'forceError':false
-    },
-  },
-  'hello2':{
-    'module':'./test/hello.js',
-    'options':{
-      'name':'nobody will know',
-      'forceError':true
-    }
-  }
-};
+var factory = require('../index.js').factory;
 
 suite('Factory Tests',function(){
-  
+
   test('Basic usage', function (done)  {
     
     var config = {
       'hello':{
-        'module':'./test/hello.js',
+        'module':'./test/fakes/hello.js',
         'options':{
           'name':'Borbat the Usurper'
         }
@@ -84,9 +67,25 @@ suite('Factory Tests',function(){
 
       done();
     });
-  })
+  });
 
   test('Initialize with error', function (done) {
+    var badConfig = {
+      'hello':{
+        'module':'./test/fakes/hello.js',
+        'options':{
+          'name':'nobody will know',
+          'forceError':false
+        },
+      },
+      'hello2':{
+        'module':'./test/fakes/hello.js',
+        'options':{
+          'name':'nobody will know',
+          'forceError':true
+        }
+      }
+    };
 
     factory.build(badConfig,function(err,app) {
       assert.ok(err,'there should be an error');
@@ -96,5 +95,5 @@ suite('Factory Tests',function(){
       done();
     });
   });
-});
 
+});
