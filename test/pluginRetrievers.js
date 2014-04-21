@@ -1,7 +1,7 @@
 var assert = require('assert');
-var retrievers = require('../index.js').factory.defaultPluginRetrievers;
+var retrievers = require('../index.js').defaultPluginRetrievers;
 
-suite('Factory Tests',function(){
+suite('Retriever Tests',function(){
 
   test('module retriever', function (done)  {
   	var rstring = './test/fakes/hello.js';

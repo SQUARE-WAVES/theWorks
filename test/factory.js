@@ -1,7 +1,9 @@
 var assert = require('assert');
-var factory = require('../index.js').factory;
+var theWorks =require('../index.js');
+var defaultFactory = theWorks.createBuilder();
+var customRetriever = require('./fakes/retriever.js');
 
-suite('Factory Tests',function(){
+suite('Default Factory Tests',function(){
 
   test('Basic usage', function (done)  {
     
@@ -14,7 +16,7 @@ suite('Factory Tests',function(){
       }
     };
 
-    factory.build(config,function(err,app){
+    defaultFactory(config,function(err,app){
       assert.ifError(err,'there should not be an error');
       assert.ok(app.hello, 'heloo?');
       assert.equal(app.hello.hello(), 'Hello Borbat the Usurper!', 'he must be named!');
@@ -40,10 +42,11 @@ suite('Factory Tests',function(){
       }
     };
 
-    factory.build(config,function(err,app){
-      assert.ok(err,'there should not be error');
+    defaultFactory(config,function(err,app){
+      assert.ok(err,'there should be an error');
       assert.equal(app,null,'no app should have been made');
-      console.error(err);
+      assert.notEqual(err.message.indexOf('hello'),-1,'the first module\'s name should appear in the error message');
+      assert.notEqual(err.message.indexOf('hello2'),-1,'the second module\'s name should appear in the error message');
 
       done();
     });
@@ -60,10 +63,10 @@ suite('Factory Tests',function(){
       }
     };
 
-    factory.build(config,function(err,app){
+    defaultFactory(config,function(err,app){
       assert.ok(err,'there should not be error');
       assert.equal(app,null,'no app should have been made');
-      console.error(err);
+      assert.notEqual(err.message.indexOf('hello'),-1,'the module\'s name should appear in the error message');
 
       done();
     });
@@ -87,13 +90,82 @@ suite('Factory Tests',function(){
       }
     };
 
-    factory.build(badConfig,function(err,app) {
+    defaultFactory(badConfig,function(err,app) {
       assert.ok(err,'there should be an error');
-
       assert.equal(app.hello2,null,'by searching for a null plugin we should be able to find the one which errored');
 
       done();
     });
   });
 
+  test('Value retriever test',function(done){
+    var config = {
+      'notes':{
+        'value':'testValue'
+      }
+    };
+
+    defaultFactory(config,function(err,app){
+      assert.ifError(err,'there should not be an error');
+      assert.equal(app.notes,config.notes.value,'the value should have been plugged into the app');
+      done();
+    });
+  });
+
+  test('Mixed retriever test',function(done){
+    var config = {
+      'hello':{
+        'module':'./test/fakes/hello.js',
+        'options':{
+          'name':'Borbat the Usurper'
+        }
+      },
+      'notes':{
+        'value':'testValue'
+      }
+    };
+
+    defaultFactory(config,function(err,app){
+      assert.ifError(err,'there should not be an error');
+      assert.ok(app.hello, 'heloo?');
+      assert.equal(app.notes,config.notes.value,'the value should have been plugged into the app');
+      done();
+    });
+  });
+});
+
+
+suite('custom factory test',function(){
+  var customFactory = theWorks.createBuilder({
+    'range':customRetriever
+  });
+
+  test('custom retriever test',function(done){
+    var config = {
+      'notes':{
+        'range':2
+      }
+    };
+
+    customFactory(config,function(err,app){
+      assert.ifError(err,'there should not be an error');
+      assert.equal(app.notes[0],0,'the correct first part of the useless junk thing that comes out of this retriever should be there');
+      assert.equal(app.notes[1],1,'the correct second part of theuseless junk thing that comes out of this retriever should be there');
+      done();
+    });
+  });
+
+  test('custom retriever error',function(done){
+    var config = {
+      'notes':{
+        'range':'barg'
+      }
+    };
+
+    customFactory(config,function(err,app){
+      assert.ok(err,'there should be an error');
+      assert.equal(app,null,'the app should not be made');
+      done();
+    });
+  });
 });

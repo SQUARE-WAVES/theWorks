@@ -12,10 +12,10 @@
   "author": "michael.behrman@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "lodash": "~2.4.1",
-    "async": "~0.2.10"
+    "lodash": "2.4.1",
+    "async": "0.7"
   },
   "devDependencies": {
-    "mocha": "~1.12.0"
+    "mocha": "1.12.0"
   }
 }
