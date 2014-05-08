@@ -9,7 +9,7 @@ suite('Default Factory Tests',function(){
     
     var config = {
       'hello':{
-        'module':'./test/fakes/hello.js',
+        'plugin':'./test/fakes/hello.js',
         'options':{
           'name':'Borbat the Usurper'
         }
@@ -27,14 +27,14 @@ suite('Default Factory Tests',function(){
   test('usage with nonexistant modules',function(done){
     var config = {
       'hello':{
-        'module':'./test/dracula_city.js',
+        'plugin':'./test/dracula_city.js',
         'options':{
           'name':'nobody will know',
           'forceError':false
         },
       },
       'hello2':{
-        'module':'./test/not_real.jerks',
+        'plugin':'./test/not_real.jerks',
         'options':{
           'name':'nobody will know',
           'forceError':true
@@ -55,7 +55,7 @@ suite('Default Factory Tests',function(){
   test('usage with bad module entries',function(done){
     var config = {
       'hello':{
-        'module':true,
+        'plugin':true,
         'options':{
           'name':'nobody will know',
           'forceError':false
@@ -75,14 +75,14 @@ suite('Default Factory Tests',function(){
   test('Initialize with error', function (done) {
     var badConfig = {
       'hello':{
-        'module':'./test/fakes/hello.js',
+        'plugin':'./test/fakes/hello.js',
         'options':{
           'name':'nobody will know',
           'forceError':false
         },
       },
       'hello2':{
-        'module':'./test/fakes/hello.js',
+        'plugin':'./test/fakes/hello.js',
         'options':{
           'name':'nobody will know',
           'forceError':true
@@ -115,7 +115,7 @@ suite('Default Factory Tests',function(){
   test('Mixed retriever test',function(done){
     var config = {
       'hello':{
-        'module':'./test/fakes/hello.js',
+        'plugin':'./test/fakes/hello.js',
         'options':{
           'name':'Borbat the Usurper'
         }
@@ -143,7 +143,10 @@ suite('custom factory test',function(){
   test('custom retriever test',function(done){
     var config = {
       'notes':{
-        'range':2
+        'plugin':{
+          'type':'range',
+          'path': 2
+        }
       }
     };
 
