@@ -1,5 +1,5 @@
 var assert = require('assert');
-var retrievers = require('../index.js').defaultPluginRetrievers;
+var retrievers = require('../lib/pluginRetrievers.js');
 
 suite('Retriever Tests',function(){
 
