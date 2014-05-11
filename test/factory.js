@@ -134,7 +134,6 @@ suite('Default Factory Tests',function(){
   });
 });
 
-
 suite('custom factory test',function(){
   var customFactory = theWorks.createBuilder({
     'range':customRetriever
