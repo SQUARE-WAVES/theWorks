@@ -1,6 +1,6 @@
 {
   "name": "the-works",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a dependency injection system using inheritable POJSO config",
   "contributors": [
     "Mike Behrman"
