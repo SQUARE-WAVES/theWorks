@@ -170,4 +170,22 @@ suite('custom factory test',function(){
       done();
     });
   });
+
+  test('build undefined package',function(done){
+    defaultFactory(undefined,function(err,app){
+      assert.ifError(err,'there should not be an error, an undefined package is legit');
+      assert.deepEqual(app,{},'an empty app should be built');
+      done();
+    });
+  });
+
+  test('build null package',function(done){
+    defaultFactory(null,function(err,app){
+      assert.ifError(err,'there should not be an error, a null package is legit');
+      assert.deepEqual(app,{},'an empty app should be built');
+      done();
+    });
+  });
+
+
 });
