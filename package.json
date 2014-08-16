@@ -1,7 +1,7 @@
 {
   "name": "the-works",
   "version": "1.0.1",
-  "description": "a dependency injection system using inheritable POJSO config",
+  "description": "a dependency injection system",
   "contributors": [
     "Mike Behrman"
   ],
@@ -12,10 +12,25 @@
   "author": "michael.behrman@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "lodash": "2.4.1",
-    "async": "0.7"
+    "lodash": "^2.4.1",
+    "async": "^0.9.0"
   },
   "devDependencies": {
     "mocha": "1.12.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SQUARE-WAVES/theWorks.git"
+  },
+  "keywords": [
+    "dependency",
+    "injection"
+  ],
+  "bugs": {
+    "url": "https://github.com/SQUARE-WAVES/theWorks/issues"
+  },
+  "homepage": "https://github.com/SQUARE-WAVES/theWorks"
 }
