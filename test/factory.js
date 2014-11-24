@@ -187,5 +187,58 @@ suite('custom factory test',function(){
     });
   });
 
+  test('build recursive plugin',function(done){
+    var rootVal = 15;
+    var multiVal = 'horse';
+    var multiRangeIn = 2;
+    var multiRangeOut = [0,1];
 
+    //this is some insane config, 
+    var config = {
+      'zap':{
+        'plugin':'./test/fakes/multiPlug.js',
+        'options':{
+          'root':rootVal,
+          'multi':{
+            'val':{
+              'value':multiVal
+            },
+            'rng':{
+              'plugin':{
+                'type':'range',
+                'path':multiRangeIn
+              }
+            },
+            'inception':{
+              'plugin':'./test/fakes/multiPlug.js',
+              'options':{
+                'root':rootVal + 1,
+                'multi':{
+                  'rng':{
+                    'plugin':{
+                    'type':'range',
+                    'path':multiRangeIn
+                  }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    customFactory(config,function(err,pkg){
+      assert.ifError(err,'there should not be an error');
+
+      assert.equal(pkg.zap.root,rootVal,'the root should have the correct value');
+      assert.equal(pkg.zap.multi.val,multiVal,'the sub package should be built with the correct values');
+      assert.deepEqual(pkg.zap.multi.rng,multiRangeOut,'the sub package should be able to use custom builders');
+
+      assert.equal(pkg.zap.multi.inception.root,rootVal + 1,'gotta be able to just keep going');
+      assert.deepEqual(pkg.zap.multi.inception.multi.rng,multiRangeOut,'the same builder should be able to go arbitrarily deep');
+      done();
+    });
+
+  });
 });
