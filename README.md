@@ -1,5 +1,5 @@
 the-works
-========
+=========
 
 really stupid dependency injection
 
@@ -98,7 +98,7 @@ build(conf, function(err,package){
 
 #what kind of stuff can I put in a config?
 
-configs have 2 basic units, *values* which are injected without any kind of change, and *plugins* which are functions that are executed with a hash of options passed int, and their results are placed in as the dependency.
+configs have 2 basic units, *values* which are injected without any kind of change, and *plugins* which are functions that are executed with a hash of options passed in, and their results are placed in as the dependency.
 
 ##how do I configure a value?
 
@@ -130,7 +130,7 @@ for example, if your module "plugin-collection" exports a plugin called "plug" (
 
 or if the module was in a local path like ./lib/plugins the path might look like "./lib/plugins/plugin_collection.js#plug."
 
-#how do I write a plugin
+##how do I write a plugin
 
 By default, a plugin is a function that takes a hash of options and a callback, it calls the callback with the thing you want to inject, or an error. Here is an example:
 
@@ -195,7 +195,32 @@ it looks like this (assuming you are using our custom builder above):
 	}
 ```
 
+
+##what if I want to have the plugin inject dependencies (new in v1.1.0)
+
+the-works 1.1.0 supports having plugins that build parts of themselves using the same builder. All you need to do is write your plugin function with 3 arguments. Like so :
+
+```
+moudle.exports = function(options,builder,callback){
+	
+	var package = {}
+	~~do some stuff that doesn't need the works~~
+
+	builder(options.subModule,function(err,pkg){
+		if(err){
+			callback(err)
+		}
+		else{
+			package.submodule = pkg.whatever
+			callback(null,package);	
+		}
+	})
+}
+```
+
+the builder passed in is the same one used to build the top builder, meaning that you can use any custom retrievers you have.
+
 #what else does the-works export:
 
-the-works exports a utilities section that for now contains the function "requireModule," this is the function that the default plugin retriever uses to require modules, it is handy for writing your own plugin retrievers.
+the-works exports a utilities section that for now contains the function "requireModule," this is the function that the default plugin retriever uses to require modules, it is handy for writing your own plugin retrievers if you want to wrap different interfaces.
 
