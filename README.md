@@ -126,7 +126,7 @@ to declare a plugin, give it the key "plugin" associated with the path to that p
 
 the path to a plugin is a string, more or less it is the same string you would pass into require in your main function. As well, since a module might export more than one plugin, or a plugin and something else, you can add a # followed by the export name to your path to get more specific.
 
-for example, if your module "plugin-collection" exports a plugin called "plug" (module.exports.plug = function(options,cb){...}) give it the path "plugin-collection#plug"
+for example, if your module "plugin-collection" exports a plugin called "plug" (module.exports.plug = ~~some plugin function~~) give it the path "plugin-collection#plug"
 
 or if the module was in a local path like ./lib/plugins the path might look like "./lib/plugins/plugin_collection.js#plug."
 
