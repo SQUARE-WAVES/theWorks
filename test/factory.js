@@ -1,10 +1,7 @@
 var assert = require('assert');
-var _= require("lodash");
-
 var theWorks =require('../index.js');
-var customRetriever = require('./fakes/retriever.js');
-
 var defaultFactory = theWorks.createBuilder();
+var customRetriever = require('./fakes/retriever.js');
 
 suite('Default Factory Tests',function(){
 
@@ -12,11 +9,9 @@ suite('Default Factory Tests',function(){
     
     var config = {
       'hello':{
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'Borbat the Usurper'
-          }
+        'plugin':'./test/fakes/hello.js',
+        'options':{
+          'name':'Borbat the Usurper'
         }
       }
     };
@@ -29,62 +24,20 @@ suite('Default Factory Tests',function(){
     });
   });
 
-  test('array usage',function(done){
-    var config = [
-      {
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'Borbat the Usurper'
-          }
-        }
-      },
-      {
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'salgorth of the northlands'
-          }
-        }
-      },
-      {
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'bartandalus'
-          }
-        }
-      }
-    ];
-
-    defaultFactory(config,function(err,pack){
-      assert.ifError(err,'there should not be an error');
-      assert.equal(_.isArray(pack),true,'the package should be an array');
-      assert.equal(pack[0].hello(), 'Hello Borbat the Usurper!', 'borbat must be named!');
-      assert.equal(pack[1].hello(), 'Hello salgorth of the northlands!', 'salgorth must be named!');
-      assert.equal(pack[2].hello(), 'Hello bartandalus!', 'bartandalus must be named!');
-      done();
-    });
-  })
-
   test('usage with nonexistant modules',function(done){
     var config = {
       'hello':{
-        'plugin':{
-          'path':'./test/dracula_city.js',
-          'options':{
-            'name':'nobody will know',
-            'forceError':false
-          }
-        }
+        'plugin':'./test/dracula_city.js',
+        'options':{
+          'name':'nobody will know',
+          'forceError':false
+        },
       },
       'hello2':{
-        'plugin':{
-          'path':'./test/not_real.jerks',
-          'options':{
-            'name':'nobody will know',
-            'forceError':true
-          }
+        'plugin':'./test/not_real.jerks',
+        'options':{
+          'name':'nobody will know',
+          'forceError':true
         }
       }
     };
@@ -102,13 +55,11 @@ suite('Default Factory Tests',function(){
   test('usage with bad module entries',function(done){
     var config = {
       'hello':{
-        'plugin':{
-          'path':true,
-          'options':{
-            'name':'nobody will know',
-            'forceError':false
-          }
-        }
+        'plugin':true,
+        'options':{
+          'name':'nobody will know',
+          'forceError':false
+        },
       }
     };
 
@@ -124,21 +75,17 @@ suite('Default Factory Tests',function(){
   test('Initialize with error', function (done) {
     var badConfig = {
       'hello':{
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'nobody will know',
-            'forceError':false
-          }
-        }
+        'plugin':'./test/fakes/hello.js',
+        'options':{
+          'name':'nobody will know',
+          'forceError':false
+        },
       },
       'hello2':{
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'nobody will know',
-            'forceError':true
-          }
+        'plugin':'./test/fakes/hello.js',
+        'options':{
+          'name':'nobody will know',
+          'forceError':true
         }
       }
     };
@@ -168,11 +115,9 @@ suite('Default Factory Tests',function(){
   test('Mixed retriever test',function(done){
     var config = {
       'hello':{
-        'plugin':{
-          'path':'./test/fakes/hello.js',
-          'options':{
-            'name':'Borbat the Usurper'
-          }
+        'plugin':'./test/fakes/hello.js',
+        'options':{
+          'name':'Borbat the Usurper'
         }
       },
       'notes':{
@@ -197,7 +142,10 @@ suite('custom factory test',function(){
   test('custom retriever test',function(done){
     var config = {
       'notes':{
-        'range':2
+        'plugin':{
+          'type':'range',
+          'path': 2
+        }
       }
     };
 
@@ -248,27 +196,29 @@ suite('custom factory test',function(){
     //this is some insane config, 
     var config = {
       'zap':{
-        'plugin':{
-          'path':'./test/fakes/multiPlug.js',
-          'options':{
-            'root':rootVal,
-            'multi':{
-              'val':{
-                'value':multiVal
-              },
-              'rng':{
-                'range':multiRangeIn
-              },
-              're_cur':{
-                'plugin':{
-                  'path':'./test/fakes/multiPlug.js',
-                  'options':{
-                    'root':rootVal + 1,
-                    'multi':{
-                      'rng':{
-                        'range':multiRangeIn
-                      }
-                    }
+        'plugin':'./test/fakes/multiPlug.js',
+        'options':{
+          'root':rootVal,
+          'multi':{
+            'val':{
+              'value':multiVal
+            },
+            'rng':{
+              'plugin':{
+                'type':'range',
+                'path':multiRangeIn
+              }
+            },
+            'inception':{
+              'plugin':'./test/fakes/multiPlug.js',
+              'options':{
+                'root':rootVal + 1,
+                'multi':{
+                  'rng':{
+                    'plugin':{
+                    'type':'range',
+                    'path':multiRangeIn
+                  }
                   }
                 }
               }
@@ -285,8 +235,8 @@ suite('custom factory test',function(){
       assert.equal(pkg.zap.multi.val,multiVal,'the sub package should be built with the correct values');
       assert.deepEqual(pkg.zap.multi.rng,multiRangeOut,'the sub package should be able to use custom builders');
 
-      assert.equal(pkg.zap.multi.re_cur.root,rootVal + 1,'gotta be able to just keep going');
-      assert.deepEqual(pkg.zap.multi.re_cur.multi.rng,multiRangeOut,'the same builder should be able to go arbitrarily deep');
+      assert.equal(pkg.zap.multi.inception.root,rootVal + 1,'gotta be able to just keep going');
+      assert.deepEqual(pkg.zap.multi.inception.multi.rng,multiRangeOut,'the same builder should be able to go arbitrarily deep');
       done();
     });
 

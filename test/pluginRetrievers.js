@@ -3,18 +3,14 @@ var retrievers = require('../lib/pluginRetrievers.js');
 
 suite('Retriever Tests',function(){
 
-  test('plugin retriever', function (done)  {
-  	var rstring = {
-      "path":'./test/fakes/hello.js',
-      "options":{'name':'whocares'}
-    };
+  test('module retriever', function (done)  {
+  	var rstring = './test/fakes/hello.js';
 
-  	var pluginMethod = retrievers.plugin(rstring);
+  	var pluginMethod = retrievers.module(rstring);
 
   	assert(typeof(pluginMethod) === 'function', 'plugins must be functions');
   	
-    //no builder is passed!
-  	pluginMethod(null,function(err,plugin){
+  	pluginMethod({'name':'whocares'},function(err,plugin){
   		assert.ifError(err,'there should not be an error');
   		done();
   	});
