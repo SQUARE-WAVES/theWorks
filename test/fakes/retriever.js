@@ -14,7 +14,7 @@ module.exports = function(reqOptions) {
 		throw new Error('it\'s not a number');
 	}
 	else{
-		return function(options,cb){
+		return function(builder,cb){
 			cb(null,to(reqOptions));
 		}
 	}
