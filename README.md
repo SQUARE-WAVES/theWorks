@@ -17,12 +17,14 @@ it takes **configs** that look like this:
 		"value":alniv9q2384y5qjzcv
 	},
 	"databaseConnection":{
-		"plugin":"database_driver",
-		"options":{
-			"host":"database.company.com",
-			"port":420,
-			"user":"jim"
-			"pw":"a password"
+		"plugin":{
+			"path":"database_driver",
+			"options":{
+				"host":"database.company.com",
+				"port":420,
+				"user":"jim"
+				"pw":"a password"
+			}
 		}
 	},
 	"resultsHeaderName":{
@@ -36,7 +38,6 @@ it takes **configs** that look like this:
 and pops out **packages** that look like this:
 
 ```
-
 {
 	apiKey:alniv9q2384y5qjzcv,
 	databaseConnection:{
@@ -60,11 +61,11 @@ Long story short, it is a pizza metaphor, the name comes from "give me one with 
 
 #how does the works handle dependency injection?
 
-the-works makes builders, which are functions that take a plain old js object as config, the dependencies are named by the keys of that object and the values of that object contain specifiers to either use a particular value, or a plugin. Builders come with a default way of fetching and installing plugins, but they can also have different mechanisms injected into them to handle different plugin interfaces, or retrieval methods.
+the-works makes functions that take a plain old js object as config and then call back with the constructed package. I call these functions builders. The config is really where all the good stuff happens, keys in the config name specific objects to build by containing an object with a key that specifies what the object is, and then that key maps to some data that says the specifics of how to build it.
 
-#how would one go about using this, in the simplest way possible?
+#how about an example?
 
-first make a default builder by calling createBuilder ()
+first make a default builder by calling createBuilder()
 
 ```
 var the_works = require('the-works')
