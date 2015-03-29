@@ -1,14 +1,6 @@
-var createFactory = require('./lib/factory');
-var reqMod = require('./lib/pluginRetrievers.js').module;
+var createBuilder = require('./lib/builder.js');
 
 //-------------------------------------------------------------------------------------------------
 // factory exports
 //-------------------------------------------------------------------------------------------------
-module.exports.createBuilder = createFactory;
-
-//-------------------------------------------------------------------------------------------------
-// utility exports (helpers for making retrievers)
-//-------------------------------------------------------------------------------------------------
-module.exports.utilities = {
-	'requireModule' : reqMod
-};
+module.exports.createBuilder = createBuilder;
