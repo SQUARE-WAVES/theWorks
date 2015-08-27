@@ -20,6 +20,24 @@ suite('Retriever Tests',function(){
   	});
   });
 
+  test("plugin retriever errors when path isn't found",function(done){
+    var rstring = {
+      "path":'./test/fakes/hello.js#bad_thing',
+      "options":{'name':'whocares'}
+    };
+
+    try{
+      var pluginMethod = retrievers.plugin(rstring);  
+    }
+    catch(exc){
+      assert.notEqual(exc.message.indexOf(rstring.path),-1,"the incorrect path should be included in the error message");
+      done();
+      return;
+    }
+
+    assert(false,"an exception should have been thrown");
+  })
+
   test('value retriever',function(done){
 
   	var rval = 'a value';
