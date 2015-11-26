@@ -1,6 +1,6 @@
 {
   "name": "the-works",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "a dependency injection system",
   "contributors": [
     "Mike Behrman"
@@ -11,8 +11,7 @@
   },
   "author": "michael.behrman@gmail.com",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "1.12.0"
   },
