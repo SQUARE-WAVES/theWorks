@@ -24,5 +24,5 @@ module.exports.retrierves = {
 
 module.exports.utilities = {
   "reqMod": reqMod,
-  "logError":
+  "logError": logError
 }

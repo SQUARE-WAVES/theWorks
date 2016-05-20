@@ -329,3 +329,36 @@ and with a config like this
 ```
 
 you can make packages that consist of packages that consist of packages, all the way down.
+
+#ERROR handling
+
+The works will pass an error back in the standard node js callback(err,result) pattern, and the error will tell you which item in your package failed to build. For example if you have a config like this
+
+```
+{
+	"dogs":{
+		"req":"./animals.js#dog"
+	},
+	"cats":{
+		"plugin":{
+			"path":"animal_factory",
+			"options":{
+				"noise":"miau",
+				"paws":true,
+				"cogs":true // OH NO THIS CAUSES AN ERROR!
+			}
+		}
+	}
+}
+```
+
+when you try and build it you will get an error with the message "plugin 'cats' failed to build." Which is nice, because you know what broke, but you don't know what caused it to break. For that reason attached to the error object will be a field "parent" which is the original error that caused the plugin to fail.
+
+Since plugins can build plugins which build plugins etc... that stack of err.parent can get to be large pretty fast, so the works also exports a utility which will log errors and their parents up several levels for you.
+
+It's brought in like so.
+```
+var errorLogger = require("the-works").utilities.logError
+```
+
+it takes 3 arguments, but the last 2 are optional. The first is the error you wish to log. The second is a boolean flag that states whether you want to log the errors stack, and the 3rd is a max depth (defaults to 10.) If you are building really really deep plugin trees.
