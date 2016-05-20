@@ -3,6 +3,7 @@ var theWorks = require('../index.js');
 var customRetriever = require('./fakes/retriever.js');
 
 var defaultFactory = theWorks.createBuilder();
+var errlog = theWorks.utilities.logError;
 
 suite('Default Factory Tests', function () {
 
@@ -283,6 +284,60 @@ suite('custom factory test', function () {
       assert.deepEqual(pkg.zap.multi.re_cur.multi.rng, multiRangeOut, 'the same builder should be able to go arbitrarily deep');
       done();
     });
-
   });
+
+  test('build recursive plugin with error', function (done) {
+    var rootVal = 15;
+    var multiVal = 'horse';
+    var multiRangeIn = 2;
+    var multiRangeOut = [0, 1];
+
+    //this is some insane config, 
+    var config = {
+      'zap': {
+        'plugin': {
+          'path': './test/fakes/multiPlug.js',
+          'options': {
+            'root': rootVal,
+            'multi': {
+              'val': {
+                'value': multiVal
+              },
+              'rng': {
+                'range': multiRangeIn
+              },
+              're_cur': {
+                'plugin': {
+                  'path': './test/fakes/multiPlug.js',
+                  'options': {
+                    'root': rootVal + 1,
+                    'multi': {
+                      'ohno': {
+                        'plugin': {
+                          'path': './test/fakes/hello.js',
+                          'options': {
+                            'forceError': true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    customFactory(config, function (err, pkg) {
+      assert.notEqual(err, undefined, 'there should be an error');
+      assert.notEqual(err.parent, undefined, 'the error should have a parent error');
+      assert.notEqual(err.parent.parent, undefined, 'the parent error should have a parnet error');
+      assert.notEqual(err.parent.parent.parent, undefined, 'the error chain should be at least 4 deep');
+      assert.equal(err.parent.parent.parent.parent, undefined, 'the error chain should be at most 4 deep');
+      done();
+    });
+  });
+
 });
