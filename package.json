@@ -1,6 +1,6 @@
 {
   "name": "the-works",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "a dependency injection system",
   "contributors": [
     "Mike Behrman"
