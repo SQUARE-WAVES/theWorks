@@ -358,13 +358,15 @@ The works will pass an error back in the standard node js callback(err,result) p
 }
 ```
 
-you would probably get an error like "invalid cogs setting on animal," However it's hard to tell which plugin failed, especially if you have more than one plugin with the same path. Therefore the works sticks the name of the plugin on the error object (err.plugins)
+you would probably get an error like "invalid cogs setting on animal" 
+
+Unfortunately it's hard to tell which part of the package failed, especially if you have more than one plugin with the same path. Therefore the works sticks the name of the thing that went wrong on the error object (err.components)
 
 **but wait, that's plural, why?**
 
-well you can build plugins that build plugins that build plugins. So you probably want to know the whole tree down to the thing that actually failed. so you get an arry, from the root to the actual offender.
+well you can build plugins that build plugins that build plugins. So you probably want to know the whole tree down to the thing that actually failed. so you get an array, from the root to the actual offender.
 
-in the above example you would get an error.plugins value of ```["cats"]```. However if you had something like
+in the above example you would get an error.components value of ```["cats"]```. However if you had something like
 
 ```
 {
@@ -382,24 +384,20 @@ in the above example you would get an error.plugins value of ```["cats"]```. How
 				}
 			},
 			"wheels":{
-			//whaever it's all good here
+			//whatever it's all good here
 			}
 		}
 	}
 }
 ```
 
-you would get an error stack like ['car','engine','more_stuff','valves']
+you would get an error.components like ```['car','engine','more_stuff','valves']```
 
 **but wait, there's more**
 
-there are basically 2 places a package can go wrong. One is the _synchronous_ phase of assembling all the stuff to get built, where you might give an invalid provider, or do some other weird thing which causes some error. In that case the-works runs through and finds all the plugins that are failing. The second place things can go wrong is the _asynchronous_ phase of actually building stuff. In that case the works fails at the first callback called with an error.
+there are basically 2 places a package can go wrong. One is the _synchronous_ phase of assembling all the stuff to get built, where you might give an invalid provider, or do some other weird thing which causes some error. In that case the-works runs through and finds all the plugins that are failing. The second place things can go wrong is the _asynchronous_ phase of actually building stuff. In that case the works fails at the first callback called with an error. Just like async.parallel from the popular async library.
 
-so that means it's possible for more than one component to fail at the same level of a package. In that case your error stack will give you a comma separated string (actually ", "). I'm not sure this is the best way to deliver such news, but it is nice and printable. especially if you use some kinda ascii art like:
-
-```console.log(err.components.join("->")```
-
-to print it out.
+so that means it's possible for more than one component to fail at the same level of a package. In that case your error stack will give you a comma separated string (actually ", "). I'm not sure this is the best way to deliver such news, but it is nice and printable. especially if you use some kinda ascii art like: ```console.log(err.components.join("->")``` to print it out.
 
 e.g.
 ```
@@ -417,4 +415,4 @@ e.g.
 }
 ```
 
-your error stack would look like ["beasts","dog, horse"]
+your error.components would look like ["beasts","dog, horse"].
