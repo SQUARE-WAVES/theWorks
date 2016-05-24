@@ -86,6 +86,9 @@ suite('Default Factory Tests', function () {
 
     defaultFactory(config, function (err, app) {
       assert.ok(err, 'there should be an error');
+      assert.notEqual(err.components, undefined, 'the error should have a component stack to tell you what went wrong');
+      assert.deepEqual(err.components, ['hello, hello2'], "the component stack should show the tree of plugins");
+
       assert.equal(app, null, 'no app should have been made');
       assert.notEqual(err.message.indexOf('hello'), -1, 'the first module\'s name should appear in the error message');
       assert.notEqual(err.message.indexOf('hello2'), -1, 'the second module\'s name should appear in the error message');
@@ -109,6 +112,10 @@ suite('Default Factory Tests', function () {
 
     defaultFactory(config, function (err, app) {
       assert.ok(err, 'there should not be error');
+
+      assert.notEqual(err.components, undefined, 'the error should have a component stack to tell you what went wrong');
+      assert.deepEqual(err.components, ['hello'], "the component stack should show the tree of plugins");
+
       assert.equal(app, null, 'no app should have been made');
       assert.notEqual(err.message.indexOf('hello'), -1, 'the module\'s name should appear in the error message');
 
@@ -140,6 +147,8 @@ suite('Default Factory Tests', function () {
 
     defaultFactory(badConfig, function (err, app) {
       assert.ok(err, 'there should be an error');
+      assert.notEqual(err.components, undefined, 'the error should have a component stack to tell you what went wrong');
+      assert.deepEqual(err.components, ['hello2'], "the component stack should show the tree of plugins");
       assert.equal(app.hello2, null, 'by searching for a null plugin we should be able to find the one which errored');
 
       done();
@@ -182,6 +191,24 @@ suite('Default Factory Tests', function () {
       done();
     });
   });
+
+  test('build undefined package', function (done) {
+    defaultFactory(undefined, function (err, app) {
+      assert.ifError(err, 'there should not be an error, an undefined package is legit');
+      assert.deepEqual(app, {}, 'an empty app should be built');
+      done();
+    });
+  });
+
+  test('build null package', function (done) {
+    defaultFactory(null, function (err, app) {
+      assert.ifError(err, 'there should not be an error, a null package is legit');
+      assert.deepEqual(app, {}, 'an empty app should be built');
+      done();
+    });
+  });
+
+  
 });
 
 suite('custom factory test', function () {
@@ -214,22 +241,6 @@ suite('custom factory test', function () {
     customFactory(config, function (err, app) {
       assert.ok(err, 'there should be an error');
       assert.equal(app, null, 'the app should not be made');
-      done();
-    });
-  });
-
-  test('build undefined package', function (done) {
-    defaultFactory(undefined, function (err, app) {
-      assert.ifError(err, 'there should not be an error, an undefined package is legit');
-      assert.deepEqual(app, {}, 'an empty app should be built');
-      done();
-    });
-  });
-
-  test('build null package', function (done) {
-    defaultFactory(null, function (err, app) {
-      assert.ifError(err, 'there should not be an error, a null package is legit');
-      assert.deepEqual(app, {}, 'an empty app should be built');
       done();
     });
   });
@@ -313,10 +324,12 @@ suite('custom factory test', function () {
                     'root': rootVal + 1,
                     'multi': {
                       'ohno': {
-                        'plugin': {
-                          'path': './test/fakes/hello.js',
-                          'options': {
-                            'forceError': true
+                        'package': {
+                          "horse": {
+                            'path': './test/fakes/hello.js',
+                            'options': {
+                              'forceError': true
+                            }
                           }
                         }
                       }
@@ -332,10 +345,8 @@ suite('custom factory test', function () {
 
     customFactory(config, function (err, pkg) {
       assert.notEqual(err, undefined, 'there should be an error');
-      assert.notEqual(err.parent, undefined, 'the error should have a parent error');
-      assert.notEqual(err.parent.parent, undefined, 'the parent error should have a parnet error');
-      assert.notEqual(err.parent.parent.parent, undefined, 'the error chain should be at least 4 deep');
-      assert.equal(err.parent.parent.parent.parent, undefined, 'the error chain should be at most 4 deep');
+      assert.notEqual(err.components, undefined, 'the error should have a component stack to tell you what went wrong');
+      assert.deepEqual(err.components, ['zap', 're_cur', 'ohno', 'horse'], "the component stack should show the tree of plugins");
       done();
     });
   });

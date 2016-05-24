@@ -332,12 +332,18 @@ you can make packages that consist of packages that consist of packages, all the
 
 #ERROR handling
 
-The works will pass an error back in the standard node js callback(err,result) pattern, and the error will tell you which item in your package failed to build. For example if you have a config like this
+The works will pass an error back in the standard node js callback(err,result) pattern. Eg. if you were trying to build a config like this
 
 ```
 {
 	"dogs":{
-		"req":"./animals.js#dog"
+		"plugin":{
+			"path":"animal_factory",
+			"options":{
+				"noise":"woof",
+				"paws":true,
+				"cogs":false
+			}
 	},
 	"cats":{
 		"plugin":{
@@ -352,13 +358,63 @@ The works will pass an error back in the standard node js callback(err,result) p
 }
 ```
 
-when you try and build it you will get an error with the message "plugin 'cats' failed to build." Which is nice, because you know what broke, but you don't know what caused it to break. For that reason attached to the error object will be a field "parent" which is the original error that caused the plugin to fail.
+you would probably get an error like "invalid cogs setting on animal," However it's hard to tell which plugin failed, especially if you have more than one plugin with the same path. Therefore the works sticks the name of the plugin on the error object (err.plugins)
 
-Since plugins can build plugins which build plugins etc... that stack of err.parent can get to be large pretty fast, so the works also exports a utility which will log errors and their parents up several levels for you.
+**but wait, that's plural, why?**
 
-It's brought in like so.
+well you can build plugins that build plugins that build plugins. So you probably want to know the whole tree down to the thing that actually failed. so you get an arry, from the root to the actual offender.
+
+in the above example you would get an error.plugins value of ```["cats"]```. However if you had something like
+
 ```
-var errorLogger = require("the-works").utilities.logError
+{
+	"car":{
+		"package":{
+			"engine":{
+				"plugin":{
+					"more_stuff":{
+						"valves":{
+							"plugin":{
+								//some bad config that will cause an error
+							}
+						}
+					}
+				}
+			},
+			"wheels":{
+			//whaever it's all good here
+			}
+		}
+	}
+}
 ```
 
-it takes 3 arguments, but the last 2 are optional. The first is the error you wish to log. The second is a boolean flag that states whether you want to log the errors stack, and the 3rd is a max depth (defaults to 10.) If you are building really really deep plugin trees.
+you would get an error stack like ['car','engine','more_stuff','valves']
+
+**but wait, there's more**
+
+there are basically 2 places a package can go wrong. One is the _synchronous_ phase of assembling all the stuff to get built, where you might give an invalid provider, or do some other weird thing which causes some error. In that case the-works runs through and finds all the plugins that are failing. The second place things can go wrong is the _asynchronous_ phase of actually building stuff. In that case the works fails at the first callback called with an error.
+
+so that means it's possible for more than one component to fail at the same level of a package. In that case your error stack will give you a comma separated string (actually ", "). I'm not sure this is the best way to deliver such news, but it is nice and printable. especially if you use some kinda ascii art like:
+
+```console.log(err.components.join("->")```
+
+to print it out.
+
+e.g.
+```
+//assuming no "animal" Provider is defined
+{
+"beasts":{
+	"package":{
+		"dog":{
+			"animal":"woof woof"
+		},
+		"horse":{
+			"animal":"I'm a horrible beast"
+		}
+	}
+}
+```
+
+your error stack would look like ["beasts","dog, horse"]

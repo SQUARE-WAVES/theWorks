@@ -1,7 +1,6 @@
 var createBuilder = require('./lib/builder.js');
 var retrievers = require("./lib/pluginRetrievers.js")
 var reqMod = require("./lib/reqMod.js");
-var logError = require("./lib/logErrorStack.js");
 
 //-------------------------------------------------------------------------------------------------
 // factory export
@@ -23,6 +22,5 @@ module.exports.retrierves = {
 };
 
 module.exports.utilities = {
-  "reqMod": reqMod,
-  "logError": logError
+  "reqMod": reqMod
 }
